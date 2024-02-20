@@ -1,0 +1,526 @@
+{
+    "openapi": "3.0.0",
+    "info":{
+        "title": "Documentação da API do Desafio",
+        "description": "Essa documentação tem como objetivo instruir a maneira correta de como utilizar a API desenvolvida para o desafio.<br> Essa API simula vendas de uma cantina, com funcionalidades específicas e algumas adicionais para melhor experiência do usuário.",
+        "contact": {
+            "email": "lucas.merito@hotmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "summary": "Login de usuário",
+                "description": "Realiza login dos usuários, tem como resposta uma mensagem de result e o acess_token onde será necessário para o acesso às outras rotas.<br>O token criado no ato do login tem a duranção padrão de 5 minutos para ser expirada, assim, necessitando de um novo login.",
+                "tags": ["Login"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            },
+                            "examples": {
+                                "login":{
+                                    "value": {
+                                        "email": "admin@teste.com",
+                                        "senha": "1234"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unhauthorized"
+                    },
+                    "400": {
+                        "description": "Not Found"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "string"
+                                        },
+                                        "access_token": {
+                                            "type": "oauth2"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/list-produtos": {
+            "get": {
+                "description": "Lista todos os produtos que estão registrados, dentro de um array produtos",
+                "summary": "Listagem de Produtos",
+                "tags": ["Produtos"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "nome_produto": {
+                                            "type": "string"
+                                        },
+                                        "preco": {
+                                            "type": "float"
+                                        },
+                                        "qnt_estoq": {
+                                            "type": "integer"
+                                        },
+                                        "id_produto": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
+            }
+        },
+        "/adiciona-produto": {
+            "post": {
+                "summary": "Adicionar Produto",
+                "description": "Realiza a inserção dos produtos.",
+                "tags": ["Produtos"],
+                "security": [{"bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/adiciona-produto"
+                            },
+                            "examples": {
+                                "adiciona produto":{
+                                    "value": {
+                                        "nomeProduto": "Produto de Teste",
+                                        "preco": 5.50,
+                                        "qntEstoque": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unhauthorized"
+                    },
+                    "400": {
+                        "description": "Not Found"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/atualiza-produto": {
+            "put": {
+                "summary": "Atualiza Produto Existente",
+                "tags": ["Produtos"],
+                "parameters": [
+                    {
+                        "name": "nomeProduto",
+                        "in": "query",
+                        "required": true,
+                        "description": "Nome do produto que deseja atualizar as informações"
+                    }
+                ],
+                "security": [{"bearerAuth": []}],
+                "description": "Realiza a atualização das informações contidas no produto, onde terá que ser repassado o nome do produto que deseja atualizar como query da rota. No corpo da requisição, as variáveis que deverão ser passadas são todas as informações novas que você deseja alterar do produto informado.<br> <b>OBS.: Para que as informações sejam alteradas corretamente, no body da requisição você deverá informar todos as variáveis. Se você não desejar alterá-la, repita o mesmo nome que ela já possui.</b>",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/atualiza-produto"
+                            },
+                            "examples": {
+                                "remove produto":{
+                                    "value": {
+                                        "new_nomeProduto": "Nome de Teste 2",
+                                        "new_preco": 12.50,
+                                        "new_qntEstoq": 20
+                                    }
+                                }
+                            }
+                        }
+                    }  
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/remove-produto": {
+            "delete": {
+                "summary": "Deleta o Produto Existente",
+                "tags": ["Produtos"],
+                "security": [{"bearerAuth": []}],
+                "description": "Realiza a remoção do produto inserido. <br>No corpo da requisição, você deverá informar o nome do produto que será deletado. Você também deverá informar o <b>access_token</b> para realizar essa operação.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/remove-produto"
+                            },
+                            "examples": {
+                                "atualiza produto":{
+                                    "value": {
+                                        "nomeProduto": "Produto de Teste 2"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pedido": {
+            "post": {
+                "summary": "Realiza uma solicitação de um pedido de determinado produto",
+                "description": "Essa rota realizará a solicitação de um pedido do produto, será registrado um número de pedido e os produtos que foram solicitados serão vinculados nesse número de pedido. Todos os pedidos criados iniciarão com o status 'Em Andamento'.",
+                "tags": ["Pedidos"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/pedido"
+                            },
+                            "examples": {
+                                "adiciona produto":{
+                                    "value": {
+                                        "product": [{
+                                            "nomeProduto": "Produto de Teste 2",
+                                            "qnt": 2
+                                    }
+                                ]}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        },
+                                        "num_pedido": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token Inválido"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                }
+            }
+        },
+        "/list-pedidos": {
+            "get": {
+                "description": "Lista todos os pedidos que estão registrados",
+                "summary": "Listagem de Pedidos",
+                "tags": ["Pedidos"],
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        },
+                                        "product": {
+                                            "type": "array"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token Inválido"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    }
+                } 
+            }
+        },
+        "/auth-pedidos": {
+            "post": {
+                "summary": "Conclui ou Cancela um determinado pedido informado pelo usuário.",
+                "description": "Rota que realiza o cancelamento ou a conclusão de um pedido, refletindo também nos produtos relacionados. <b>Essa rota só poderá ser acessada por um usuário admin.</b> Na variável authorized, o valor 0 significa 'cancelado' e 1 significa 'concluído'.",
+                "tags": ["Pedidos"],
+                "security": [{"bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/auth-pedido"
+                            },
+                            "examples": {
+                                "cancela": {
+                                    "value": {
+                                        "n_pedido": "#51932517091533477126",
+                                        "authorized": 0
+                                    }
+                                },
+                                "concluido": {
+                                    "value": {
+                                        "n_pedido": "#51932517091533477126",
+                                        "authorized": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token Inválido"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    }
+                }
+            }
+        },
+        "/relatorio": {
+            "get": {
+                "summary": "Gera Relatório",
+                "description": "Gera Relatório dos pedidos concluídos e total faturado pela cantina.<br>Você pode informar dois parâmetros de data inicial e data final para obter o relatório de determinado período. Se você deseja obter o relatório completo, basta deixar os campos vazios.",
+                "tags": ["Relatório"],
+                "parameters": [
+                    {
+                        "name": "init_data",
+                        "in": "query",
+                        "required": false,
+                        "description": "Data inicial que você deseja realizar a busca por período"
+                    },
+                    {
+                        "name": "end_data",
+                        "in": "query",
+                        "required": false,
+                        "description": "Data final que você deseja realizar a busca por período"
+                    }
+                ],
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/relatorio"
+                                }
+                            },
+                            "apllication/json_2":{
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "init_data":{
+                                            "type": "data"
+                                        },
+                                        "end_data": {
+                                            "type": "data"
+                                        },
+                                        "relatorio": {
+                                            "type": "vetor with object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Login": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "senha": {
+                        "type": "string"
+                    }
+                }
+            },
+            "adiciona-produto": {
+                "type": "object",
+                "properties": {
+                    "nomeProduto": {
+                        "type": "string"
+                    },
+                    "preco": {
+                        "type": "float"
+                    },
+                    "qntEstoque": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "atualiza-produto": {
+                "type": "object",
+                "properties": {
+                    "new_nomeProduto": {
+                        "type": "string"
+                    },
+                    "new_preco": {
+                        "type": "integer"
+                    },
+                    "new_qntEstoq": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "remove-produto": {
+                "type": "object",
+                "properties": {
+                    "nomeProduto": {
+                        "type": "string"
+                    }
+                }
+            },
+            "pedido": {
+                "type": "object",
+                "properties": {
+                    "nomeProduto": {
+                        "type": "string"
+                    },
+                    "qnt": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "auth-pedido": {
+                "type": "object",
+                "properties": {
+                    "n_pedido": {
+                        "type": "string"
+                    },
+                    "authorized": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "relatorio": {
+                "type": "object",
+                "properties": {
+                    "mais_vendidos": [
+                        {
+                            "nome_produto": {
+                                "type": "string"
+                            },
+                            "qnt": {
+                                "type": "integer"
+                            }
+                        }
+                    ],
+                    "totalVendido": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
