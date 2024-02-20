@@ -4,7 +4,7 @@
 const knex = require('knex')({
     client: 'mysql2',
     connection: {
-        database: process.env.DATABASE,
+        database: 'teste',
         user: process.env.USER,
         password: process.env.PASS,
     },

@@ -1,7 +1,5 @@
 ## Nota do Desenvolvedor
 
-* Durante o desenvolvimento dessa API, foi utilizado o ORM Knex.<br>
-Quando estava na etapa final do desafio, reparei que deveria utilizar o ORM Sequelize. Para evitar em desfazer todo o trabalho já feito e não ficar totalmente fora das solicitações do desafio (visto que o resultado seria o mesmo independente do ORM utilizado), a rota `/relatorio` foi feita com base na ORM exigida pelo desafio.<br>Nenhuma dessas mudanças afetará no desempenho ou funcionalidade do código feito, apenas esclarecendo a pequena confusão feita por mim.
 * Como maneira de facilitar a leitura e testes das rotas da API com parte da equipe de avaliação, foi criado uma rota responsável por toda a documentação de forma mais visível. Ainda sim, não tira o fato desse documento ter sido criado com as mesmas características.
 * Recomendo que, para as instalações e requisitos iniciais, seja feito a letiura desse documento para que não haja problemas, após toda a configuração, você poderá acessar a rota `/api-docs` onde estará visível toda a documentação e rotas da API de forma clara e organizada, tanto como testes, exemplos, retornos de sucessos e possíveis erros.
 * Quaisquer dúvidas, entrar em contato com o desenvolvedor responsável para esclarecimentos.
@@ -22,7 +20,7 @@ Quando estava na etapa final do desafio, reparei que deveria utilizar o ORM Sequ
     [✓] As operações de CRUD dos produtos e pedidos só devem ser acessíveis por usuários autenticados.
 
 ### Relatórios:
-    [] Crie uma rota para gerar relatórios que mostrem os produtos mais vendidos e a receita total da cantina em um período específico.
+    [✓] Crie uma rota para gerar relatórios que mostrem os produtos mais vendidos e a receita total da cantina em um período específico.
 
 
 ## INSTRUÇÕES INICIAIS
@@ -45,11 +43,10 @@ Primeiros passos:
 PORT = YOUR_PORT
 SECRET = CHOISE_KEY_SECRET
 
-DATABASE = DATABASE_NAME
 USER = USER_ROOT_FROM_DATABASE_(DEFAULT: ROOT)
 PASS = DATABASE_PASSWORD
 ```
-4. Agora você irá precisar realizar a importação do arquivo do banco de dados para que ele crie todas tabelas que será utilizada nesse sistema. Todos os valores contidos dentro desse banco são **totalmente fictícios**. O arquivo está localizado em **Database/**.
+4. Agora você irá precisar realizar a importação do arquivo de backup do banco de dados para que ele crie todas tabelas que será utilizada nesse sistema, ela encontra-se no diretório: **DESAFIO_API/Database/backup_dbteste.sql**. Todos os valores contidos dentro desse banco são **totalmente fictícios**, por isso que ele está sendo enviado em um repositório público, pois não contém nenhuma informação sensível. O nome do banco de dados por padrão é 'teste', onde já vem configurado no backup gerado.
 4. Com o arquivo de configuração corretamente configurado, você poderá executar o comando ``` npx nodemon index.js ``` ou ``` node . ```, esse comando irá ligar o servidor. Uma confirmação que está tudo certo é a seguinte mensagem: "servidor rodando na porta:  (sua porta)".
 1. Após isso, se tudo ocorrer bem, o sisitema estará apto para ser testado.
 

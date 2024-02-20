@@ -12,7 +12,7 @@
         "/login": {
             "post": {
                 "summary": "Login de usuário",
-                "description": "Realiza login dos usuários, tem como resposta uma mensagem de result e o acess_token onde será necessário para o acesso às outras rotas.<br>O token criado no ato do login tem a duranção padrão de 5 minutos para ser expirada, assim, necessitando de um novo login.",
+                "description": "Realiza login dos usuários, tem como resposta uma mensagem de result e o acess_token onde será necessário para o acesso às outras rotas.<br>O token criado no ato do login tem a duranção padrão de 5 minutos para ser expirada, assim, necessitando de um novo login.<br> Use<br> email: admin@teste.com<br>senha: 1234 <br>Isso serve para realizar o login e conseguir utilizar as rotas que precisam de autenticação para realizar os testes.",
                 "tags": ["Login"],
                 "requestBody": {
                     "content": {
@@ -35,8 +35,8 @@
                     "401": {
                         "description": "Unhauthorized"
                     },
-                    "400": {
-                        "description": "Not Found"
+                    "404": {
+                        "description": "User Not Found"
                     },
                     "200": {
                         "description": "OK",
@@ -238,6 +238,7 @@
                 "summary": "Realiza uma solicitação de um pedido de determinado produto",
                 "description": "Essa rota realizará a solicitação de um pedido do produto, será registrado um número de pedido e os produtos que foram solicitados serão vinculados nesse número de pedido. Todos os pedidos criados iniciarão com o status 'Em Andamento'.",
                 "tags": ["Pedidos"],
+                "security": [{"bearerAuth": []}],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -376,7 +377,7 @@
         "/relatorio": {
             "get": {
                 "summary": "Gera Relatório",
-                "description": "Gera Relatório dos pedidos concluídos e total faturado pela cantina.<br>Você pode informar dois parâmetros de data inicial e data final para obter o relatório de determinado período. Se você deseja obter o relatório completo, basta deixar os campos vazios.",
+                "description": "Gera Relatório dos pedidos concluídos e total faturado pela cantina.<br>Você pode informar dois parâmetros de data inicial e data final para obter o relatório de determinado período. Se você deseja obter o relatório completo, basta deixar os campos vazios.<br>O modelo correto de data que é aceito pela rota é: YYYY-MM-DD ou YYYY/MM/DD. Caso seja informado um formato diferente do permitido, a aplicação alertará do erro. Também só aceitará campo de data, caso envie uma string aleatória, a aplicação bloqueará a execução do código e alertará do erro.",
                 "tags": ["Relatório"],
                 "parameters": [
                     {

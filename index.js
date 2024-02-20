@@ -145,7 +145,7 @@ app.put('/atualiza-produto', jwtverify, async (req, res) => {
 })
 
 // Rota que realizar o pedido de um produto
-app.post('/pedido', async (req, res) => {
+app.post('/pedido', jwtverify, async (req, res) => {
         var { product }  = req.body
 
         console.log(product)
@@ -273,43 +273,56 @@ app.get("/relatorio", async (req, res) => {
 
     var { init_data, end_data } = req.query
 
-    if( init_data && end_data && init_data < end_data){
-        const relatorio = await Sequelize.query(`
+    console.log(init_data, end_data)
+
+    let date = new Date(init_data)
+    let date2 = new Date(end_data)
+    console.log(isNaN(date2.getTime()))
+    if(isNaN(date.getTime()) || isNaN(date2.getTime())){
+        return res.json({msg: "Variáveis só aceitam valores no formato data. YYYY-MM-DD"})
+    }
+
+    try{
+        if( init_data && end_data && init_data < end_data){
+            const relatorio = await Sequelize.query(`
+                SELECT nome_produto, qnt, preco * qnt as valor_pedido FROM tb_pedidos ped
+                INNER JOIN tb_produtos prod
+                ON ped.id_produto = prod.id_produto
+                WHERE status_produto = 'Concluído' AND datatime >= '${init_data}' AND datatime <= '${end_data}';
+            `)
+            console.log(relatorio)
+    
+            return res.json({data_inicial: init_data, end_data: end_data, relatorio: relatorio[0]})
+        }
+    
+        const mais_vendidos = await Sequelize.query(`
             SELECT nome_produto, qnt, preco * qnt as valor_pedido FROM tb_pedidos ped
             INNER JOIN tb_produtos prod
             ON ped.id_produto = prod.id_produto
-            WHERE status_produto = 'Concluído' AND datatime >= '${init_data}' AND datatime <= '${end_data}';
+            WHERE status_produto = 'Concluído'
+            ORDER BY qnt DESC;
         `)
-        console.log(relatorio)
-
-        return res.json({data_inicial: init_data, end_data: end_data, relatorio: relatorio[0]})
-    }
-
-    const mais_vendidos = await Sequelize.query(`
-        SELECT nome_produto, qnt, preco * qnt as valor_pedido FROM tb_pedidos ped
-        INNER JOIN tb_produtos prod
-        ON ped.id_produto = prod.id_produto
-        WHERE status_produto = 'Concluído'
-        ORDER BY qnt DESC;
-    `)
-    console.log(mais_vendidos)
-
-    var total_vendido = await Sequelize.query(`
-        SELECT SUM(qnt * preco) as total FROM tb_pedidos ped
-        INNER JOIN tb_produtos prod
-        ON ped.id_produto = prod.id_produto
-        WHERE status_produto = 'Concluído'
-        ORDER BY qnt DESC;    
-    `)
+        console.log(mais_vendidos)
     
-    if(total_vendido[0][0].total == null){
-        total_vendido = "0,00"
-    }else{
-        total_vendido = total_vendido[0][0].total.toString()
-        total_vendido = total_vendido.includes('.') ? total_vendido.replace('.', ',') : total_vendido + ',00'
+        var total_vendido = await Sequelize.query(`
+            SELECT SUM(qnt * preco) as total FROM tb_pedidos ped
+            INNER JOIN tb_produtos prod
+            ON ped.id_produto = prod.id_produto
+            WHERE status_produto = 'Concluído'
+            ORDER BY qnt DESC;    
+        `)
+        
+        if(total_vendido[0][0].total == null){
+            total_vendido = "0,00"
+        }else{
+            total_vendido = total_vendido[0][0].total.toString()
+            total_vendido = total_vendido.includes('.') ? total_vendido.replace('.', ',') : total_vendido + ',00'
+        }
+    
+        res.status(200).json({mais_vendidos: mais_vendidos[0], receitaTotal: total_vendido})
+    }catch{
+        res.status(400).json({msg: "Ocorreu um erro com as datas informadas, modelo da data correta: YYYY-MM-DD"})
     }
-
-    res.status(200).json({mais_vendidos: mais_vendidos[0], receitaTotal: total_vendido})
 })
 
 app.use(function (req, res, next) {
