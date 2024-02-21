@@ -269,7 +269,7 @@ app.post('/auth-pedidos', jwtverify, async (req, res) => {
 })
 
 // Rota que Gera Relatório dos Produtos com Status Concluído
-app.get("/relatorio", async (req, res) => {
+app.get("/relatorio", jwtverify, async (req, res) => {
 
     var { init_data, end_data } = req.query
 
