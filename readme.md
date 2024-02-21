@@ -122,3 +122,23 @@ Segue as rotas e todas suas interações, as rotas foram testadas via Postman:
 >```
 >>
 
+`GET /list-pedidos`
+
+>*Rota que retorna a lista de pedidos registrados, retornando número do pedido, status desse pedido e todos os produtos que estão vinculados dentro desse número de pedido, tal como sua quantidade e nome do produto em específico.*
+>
+>![](image/list-produtos.png)
+>
+>Como mensagem de sucesso, a API retornará:<br>
+>```
+>"msg": "Sucesso",
+>"product": [{
+>       "n_pedidos": número do pedido,
+>       "status_pedido": status do pedido,
+>       "produtos": [
+>               {
+>                   "qnt": quantidade solicitada,
+>                   "nome_produto": nome do produto solicitado
+>               }
+>           ] 
+>}]
+>```
