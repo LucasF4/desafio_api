@@ -377,7 +377,7 @@
         "/relatorio": {
             "get": {
                 "summary": "Gera Relatório",
-                "description": "Gera Relatório dos pedidos concluídos e total faturado pela cantina.<br>Você pode informar dois parâmetros de data inicial e data final para obter o relatório de determinado período. Se você deseja obter o relatório completo, basta deixar os campos vazios.<br>O modelo correto de data que é aceito pela rota é: YYYY-MM-DD ou YYYY/MM/DD. Caso seja informado um formato diferente do permitido, a aplicação alertará do erro. Também só aceitará campo de data, caso envie uma string aleatória, a aplicação bloqueará a execução do código e alertará do erro.",
+                "description": "Gera Relatório dos pedidos concluídos e total faturado pela cantina.<br>Você pode informar dois parâmetros de data inicial e data final para obter o relatório de determinado período. O modelo correto de data que é aceito pela rota é: YYYY-MM-DD ou YYYY/MM/DD. Caso seja informado um formato diferente do permitido, a aplicação alertará do erro. Também só aceitará campo de data, caso envie uma string aleatória, a aplicação bloqueará a execução do código e alertará do erro.",
                 "tags": ["Relatório"],
                 "parameters": [
                     {

@@ -269,7 +269,7 @@ app.post('/auth-pedidos', jwtverify, async (req, res) => {
 })
 
 // Rota que Gera Relatório dos Produtos com Status Concluído
-app.get("/relatorio", jwtverify, async (req, res) => {
+app.get("/relatorio", async (req, res) => {
 
     var { init_data, end_data } = req.query
 
@@ -294,7 +294,7 @@ app.get("/relatorio", jwtverify, async (req, res) => {
     
             return res.json({data_inicial: init_data, end_data: end_data, relatorio: relatorio[0]})
         }
-    
+        
         const mais_vendidos = await Sequelize.query(`
             SELECT nome_produto, qnt, preco * qnt as valor_pedido FROM tb_pedidos ped
             INNER JOIN tb_produtos prod
